@@ -21,11 +21,11 @@ void loop() {
   valorR = digitalRead(pinR);
   valorV = digitalRead(pinV);
 
-  if(valorR == HIGH){
+  if(valorR == HIGH){//ENCENDER LED ROJA
     digitalWrite(ledR, HIGH);
     digitalWrite(ledV, LOW);
   }
-  if(valorV == HIGH){
+  if(valorV == HIGH){//ENCENDER LED VERDE
     digitalWrite(ledR, LOW);
     digitalWrite(ledV, HIGH);
   }
