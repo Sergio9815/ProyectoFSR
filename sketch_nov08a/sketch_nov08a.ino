@@ -74,9 +74,11 @@ void loop()
         if(ok == true){
           Serial.print("ENCONTRADO OK1");
           //digitalWrite(pinVerde, LOW);
-          myservo.write(30);  
-          DERECHA;
-          delay(300);
+          myservo.write(30); 
+          ALTO;  
+          delay(1000);
+          GIROD;
+          delay(250);
           go = true;
         }
         else if(ok2 == true){
@@ -88,9 +90,11 @@ void loop()
         }
         else if(ok3 == true){       
           Serial.print("ENCONTRADO OK3");
-          myservo.write(30);         
-          IZQUIERDA;
-          delay(300);
+          myservo.write(30);
+          ALTO;  
+          delay(1000);     
+          GIROI;    
+          delay(250);
           go = true;
         }
         else{
@@ -121,11 +125,11 @@ boolean search1(){
   myservo.write(-20);  ;          
   delay(3000);
   dis = getDistance();
+ /* dis = getDistance();
   dis = getDistance();
   dis = getDistance();
   dis = getDistance();
-  dis = getDistance();
-  dis = getDistance();
+  dis = getDistance();*/
 
   if(dis > 20 && dis < 100){
     Serial.print("ENCONTRADO SEARCH1");
@@ -142,11 +146,11 @@ boolean search2(){
   myservo.write(30);  ;          
   delay(3000);
   dis = getDistance();
+ /* dis = getDistance();
   dis = getDistance();
   dis = getDistance();
   dis = getDistance();
-  dis = getDistance();
-  dis = getDistance();
+  dis = getDistance();*/
 
   if(dis > 20 && dis < 100){
     Serial.print("ENCONTRADO SEARCH2");
@@ -164,11 +168,11 @@ boolean search3(){
   myservo.write(80);  ;          
   delay(3000);
   dis = getDistance();
+ /* dis = getDistance();
   dis = getDistance();
   dis = getDistance();
   dis = getDistance();
-  dis = getDistance();
-  dis = getDistance();
+  dis = getDistance();*/
 
   if(dis > 20 && dis < 100){
     Serial.print("ENCONTRADO SEARCH3");
