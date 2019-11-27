@@ -41,6 +41,7 @@ void setup()
     pinMode(pinVerde, OUTPUT);
     pinMode(pinRojo, OUTPUT);
     myservo.attach(9);  // vincula el servo al pin digital 9
+    myservo.write(35);
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
     pinMode(ECHO_PIN , INPUT);
     pinMode(TRIGGER_PIN, OUTPUT);
@@ -74,7 +75,7 @@ void loop()
         if(ok == true){
           Serial.print("ENCONTRADO OK1");
           //digitalWrite(pinVerde, LOW);
-          myservo.write(30); 
+          myservo.write(35); 
           ALTO;  
           delay(1000);
           GIROD;
@@ -83,14 +84,14 @@ void loop()
         }
         else if(ok2 == true){
           Serial.print("ENCONTRADO OK2");
-          myservo.write(30);  
+          myservo.write(35);  
           ALTO;  
           delay(2000);
           go = true;
         }
         else if(ok3 == true){       
           Serial.print("ENCONTRADO OK3");
-          myservo.write(30);
+          myservo.write(35);
           ALTO;  
           delay(1000);     
           GIROI;    
@@ -101,9 +102,9 @@ void loop()
           go = false;
         }
  
-        //dis = getDistance();
         if(go == false)
         {
+          myservo.write(35);
           ALTO;  
           delay(2000);
           IZQUIERDA;
@@ -143,7 +144,7 @@ boolean search1(){
 }
 
 boolean search2(){
-  myservo.write(30);  ;          
+  myservo.write(35);  ;          
   delay(3000);
   dis = getDistance();
  /* dis = getDistance();
