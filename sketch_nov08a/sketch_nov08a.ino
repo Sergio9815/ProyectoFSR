@@ -61,7 +61,7 @@ void loop()
     if(dis < 20 || go == false)
     {
         digitalWrite(pinVerde, LOW);
-        digitalWrite(pinRojo, HIGH);
+        digitalWrite(pinRojo, HIGH);//MANTIENE EL LED ROJO ENCENDIDO HASTA QUE ENCUENTRE UN OBJETO
         Serial.print("Fase DETENER: ");
         Serial.print(dis); // Send ping, get distance in cm and print result (0 = outside set distance range)
         Serial.println(" cm");  
