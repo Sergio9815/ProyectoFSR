@@ -1,3 +1,5 @@
+/*CONTROL DE LAS LUCES*/
+
 //PINES DE ENTRADA
 int pinV = 6;
 int pinR = 7;
