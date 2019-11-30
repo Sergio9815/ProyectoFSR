@@ -1,5 +1,7 @@
 #include <Servo.h>
 
+//PROYECTO FINAL SISTEMAS ROBÓTICOS
+
 //Movimientos
 #define ADELANTE  {digitalWrite(IN1,HIGH);digitalWrite(IN2,LOW);digitalWrite(IN3,LOW);digitalWrite(IN4,HIGH);}   
 #define ATRAS     {digitalWrite(IN1,LOW);digitalWrite(IN2,HIGH);digitalWrite(IN3,LOW);digitalWrite(IN4,HIGH);}                         
