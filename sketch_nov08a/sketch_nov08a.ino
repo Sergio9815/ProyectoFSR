@@ -32,7 +32,14 @@ boolean go = false;
 boolean ok;
 boolean ok2;
 boolean ok3;
-Servo myservo;  // crea el objeto servo
+
+//VARIBALES PARA LAS FASES
+boolean fase1 = true;
+boolean fase2 = false;
+
+
+//SERVO MOTORES
+Servo myservo, servoA;  // crea el objeto servo
 
 //LEDS
 int pinVerde = 11;
@@ -43,7 +50,9 @@ void setup()
     pinMode(pinVerde, OUTPUT);
     pinMode(pinRojo, OUTPUT);
     myservo.attach(9);  // vincula el servo al pin digital 9
-    myservo.write(35);
+    servoA.attach(10); //PINZA DERECHA
+    myservo.write(35); //POSICION INICIAL DEL SERVO PARA EL SENSOR
+    servoA.write(0); // POSICION INICIAL DEL SERVO PARA LA PINZA
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
     pinMode(ECHO_PIN , INPUT);
     pinMode(TRIGGER_PIN, OUTPUT);
@@ -59,69 +68,117 @@ void setup()
 
 void loop()
 {  
-   dis = getDistance();
-   
-    if(dis < 20 || go == false)
-    {
-        digitalWrite(pinVerde, LOW);
-        digitalWrite(pinRojo, HIGH);//MANTIENE EL LED ROJO ENCENDIDO HASTA QUE ENCUENTRE UN OBJETO
-        Serial.print("Fase DETENER: ");
-        Serial.print(dis); // Send ping, get distance in cm and print result (0 = outside set distance range)
-        Serial.println(" cm");  
-        ALTO;  
-        delay(2000);
-        ok = search1();
-        ok2 = search2();
-        ok3 = search3();
+    dis = getDistance();
 
-        if(ok == true){
-          Serial.print("ENCONTRADO OK1");
-          //digitalWrite(pinVerde, LOW);
-          myservo.write(35); 
-          ALTO;  
-          delay(1000);
-          GIROD;
-          delay(250);
-          go = true;
-        }
-        else if(ok2 == true){
-          Serial.print("ENCONTRADO OK2");
-          myservo.write(35);  
-          ALTO;  
-          delay(2000);
-          go = true;
-        }
-        else if(ok3 == true){       
-          Serial.print("ENCONTRADO OK3");
-          myservo.write(35);
-          ALTO;  
-          delay(1000);     
-          GIROI;    
-          delay(250);
-          go = true;
-        }
-        else{
-          go = false;
-        }
- 
-        if(go == false)
-        {
-          myservo.write(35);
-          ALTO;  
-          delay(2000);
-          IZQUIERDA;
-          delay(2000);
-        }
-     }
-     else if(go == true && dis > 20 && dis < 100)
-    {
+    if(fase2 == false){
+            Serial.println("FASE 1");  
+
+            if((dis < 10 || go == false))
+            {
+                digitalWrite(pinVerde, LOW);
+                digitalWrite(pinRojo, HIGH);//MANTIENE EL LED ROJO ENCENDIDO HASTA QUE ENCUENTRE UN OBJETO
+                Serial.print("Fase DETENER: ");
+                Serial.print(dis); // Send ping, get distance in cm and print result (0 = outside set distance range)
+                Serial.println(" cm");  
+                ALTO;  
+                  
+                if(fase1 == true){
+                  
+                      ok = search1();
+                      ok2 = search2();
+                      ok3 = search3();
+              
+                      if(ok == true){
+                        Serial.print("ENCONTRADO OK1");
+                        //digitalWrite(pinVerde, LOW);
+                        myservo.write(35); 
+                        ALTO;  
+                        delay(1000);
+                        GIROD;
+                        delay(250);
+                        go = true;
+                        fase1 = false;
+                      }
+                      else if(ok2 == true){
+                        Serial.print("ENCONTRADO OK2");
+                        myservo.write(35);  
+                        ALTO;  
+                        delay(2000);
+                        go = true;
+                        fase1 = false;
+                      }
+                      else if(ok3 == true){       
+                        Serial.print("ENCONTRADO OK3");
+                        myservo.write(35);
+                        ALTO;  
+                        delay(1000);     
+                        GIROI;    
+                        delay(250);
+                        go = true;
+                        fase1 = false;
+                      }
+                      else{
+                        go = false;
+                      }
+               
+                      if(go == false)
+                      {
+                        myservo.write(35);
+                        ALTO;  
+                        delay(2000);
+                        IZQUIERDA;
+                        delay(2000);
+                      }
+                }
+                else{
+                  Serial.println("PINZA OK");  
+                  delay(2000);
+                  servoA.write(30); // Mueve la pinza izquierda
+                  delay(2000);
+                  fase2 = true;
+                }
+                
+             }
+             else if(go == true && dis > 10 && dis < 100)
+            {
+                digitalWrite(pinVerde, HIGH);
+                digitalWrite(pinRojo, LOW);
+                Serial.print("Fase ObjetoEncontrado: ");
+                Serial.print(dis); // Send ping, get distance in cm and print result (0 = outside set distance range)
+                Serial.println(" cm");    
+                ADELANTE;             
+            }
+    }
+    
+    
+    if(fase2 == true) {
+      Serial.println("FASE 2");  
         digitalWrite(pinVerde, HIGH);
         digitalWrite(pinRojo, LOW);
-        Serial.print("Fase ObjetoEncontrado: ");
-        Serial.print(dis); // Send ping, get distance in cm and print result (0 = outside set distance range)
-        Serial.println(" cm");    
-        ADELANTE; 
-    }
+        GIROD;
+        delay(2000);
+        digitalWrite(pinVerde, LOW);
+        digitalWrite(pinRojo, HIGH);
+        GIROI;
+        delay(1000);
+        digitalWrite(pinVerde, HIGH);
+        digitalWrite(pinRojo, LOW);
+        GIROD;
+        delay(1000);
+        digitalWrite(pinVerde, LOW);
+        digitalWrite(pinRojo, HIGH);
+        GIROD;
+        delay(1000);
+        digitalWrite(pinVerde, HIGH);
+        digitalWrite(pinRojo, LOW);
+        GIROI;
+        delay(1000);
+        digitalWrite(pinVerde, LOW);
+        digitalWrite(pinRojo, HIGH);
+        ADELANTE;            
+        delay(2000);
+      }
+
  }
 
 boolean search1(){
