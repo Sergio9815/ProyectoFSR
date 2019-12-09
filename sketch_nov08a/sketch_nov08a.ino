@@ -52,7 +52,7 @@ void setup()
     myservo.attach(9);  // vincula el servo al pin digital 9
     servoA.attach(10); //PINZA DERECHA
     myservo.write(35); //POSICION INICIAL DEL SERVO PARA EL SENSOR
-    servoA.write(0); // POSICION INICIAL DEL SERVO PARA LA PINZA
+    servoA.write(25); // POSICION INICIAL DEL SERVO PARA LA PINZA
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
     pinMode(ECHO_PIN , INPUT);
     pinMode(TRIGGER_PIN, OUTPUT);
@@ -94,6 +94,8 @@ void loop()
                         myservo.write(35); 
                         ALTO;  
                         delay(1000);
+                        servoA.write(0);
+                        delay(500);
                         GIROD;
                         delay(250);
                         go = true;
@@ -104,6 +106,8 @@ void loop()
                         myservo.write(35);  
                         ALTO;  
                         delay(2000);
+                        servoA.write(0);
+                        delay(500);
                         go = true;
                         fase1 = false;
                       }
@@ -111,7 +115,9 @@ void loop()
                         Serial.print("ENCONTRADO OK3");
                         myservo.write(35);
                         ALTO;  
-                        delay(1000);     
+                        delay(1000); 
+                        servoA.write(0);
+                        delay(500);    
                         GIROI;    
                         delay(250);
                         go = true;
@@ -133,7 +139,7 @@ void loop()
                 else{
                   Serial.println("PINZA OK");  
                   delay(2000);
-                  servoA.write(30); // Mueve la pinza izquierda
+                  servoA.write(65); // Mueve la pinza derecha
                   delay(2000);
                   fase2 = true;
                 }
