@@ -161,7 +161,7 @@ void loop()
                 }
                 
              }
-             else if(go == true && dis > 10 && dis < 100)
+             else if(go == true && dis > 10 && dis < 50)
             {
                 digitalWrite(pinVerde, HIGH);
                 digitalWrite(pinRojo, LOW);
