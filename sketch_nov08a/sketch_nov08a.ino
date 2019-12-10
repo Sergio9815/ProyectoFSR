@@ -79,7 +79,7 @@ void loop()
     valorInfraI = digitalRead(infraIZQ);    // valor de la entrada que lee el infrarrojo izquierdo
     valorInfraD = digitalRead(infraDER);  // derecho
         
-    if(fase2 == false){
+    if(fase2 == false && fase3 == false){
             analogWrite(VelocidadMotor1, 100); //motor derecho
             analogWrite(VelocidadMotor2, 100);  //motor izquierdo
             Serial.println("FASE 1");  
@@ -177,23 +177,25 @@ void loop()
         Serial.println("FASE 2"); 
         analogWrite(VelocidadMotor1, 70); //motor derecho
         analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
-        
+
            if(valorInfraI == 1 || valorInfraD == 1){
+               digitalWrite(pinVerde, HIGH);
+               digitalWrite(pinRojo, LOW);
                ALTO;
                delay(2000);
                fase2 = false;
                fase3 = true;   
-               digitalWrite(pinVerde, HIGH);
-               digitalWrite(pinRojo, LOW);
             }
             
             if(dis < 10){
+                digitalWrite(pinRojo, HIGH);
                 ALTO;
                 delay(500);
                 GIROD;
                 delay(2300);;       
             }
             else if(dis > 10 && dis < 50){
+                digitalWrite(pinRojo, HIGH);
                 ADELANTE;
             }
       }
