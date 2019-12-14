@@ -161,7 +161,7 @@ void loop()
                   Serial.println("PINZA OK");  
                   onInfraR();
                   
-                  if(valorInfraDET == 1){
+                  //if(valorInfraDET == 1){
                     digitalWrite(pinVerde, HIGH);
                     digitalWrite(pinRojo, LOW);
                     Serial.println(valorInfraDET); 
@@ -169,7 +169,7 @@ void loop()
                     servoA.write(60); // Mueve la pinza derecha
                     delay(2000);
                     fase2 = true;
-                  }
+                 /* }
                   else{
                     digitalWrite(pinVerde, LOW);
                     digitalWrite(pinRojo, HIGH);
@@ -181,7 +181,7 @@ void loop()
                     delay(300);
                     fase1 = true;
                     go = false;
-                  }
+                  }*/
                 }
                 
              }
@@ -198,14 +198,17 @@ void loop()
     
     
     if(fase2 == true) {
-        analogWrite(VelocidadMotor1, 70); //motor derecho
-        analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
+        analogWrite(VelocidadMotor1, 50); //motor derecho
+        analogWrite(VelocidadMotor2, 50);  //motor izquierdo 
         digitalWrite(pinVerde, LOW);
         digitalWrite(pinRojo, HIGH);
         onInfraR();
+        onInfraR();
+        onInfraR();
+        onInfraR();
             if(valorInfraI == 1 && valorInfraD == 0){
                GIROI;
-               delay(1200);
+               delay(1600);
                ALTO;
                delay(500);
                fase2 = false;
@@ -215,7 +218,7 @@ void loop()
 
             if(valorInfraI == 0 && valorInfraD == 1){
                GIROD;
-               delay(1200);
+               delay(1600);
                ALTO;
                delay(500);
                fase2 = false;
@@ -236,8 +239,8 @@ void loop()
       }
 
        if(fase3 == true){
-            analogWrite(VelocidadMotor1, 80); //motor derecho
-            analogWrite(VelocidadMotor2, 80);  //motor izquierdo 
+            analogWrite(VelocidadMotor1, 70); //motor derecho
+            analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
             
             onInfraR();
             digitalWrite(pinVerde, HIGH);
