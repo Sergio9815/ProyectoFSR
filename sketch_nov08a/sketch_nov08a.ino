@@ -10,10 +10,7 @@
 #define IZQUIERDA {digitalWrite(IN1,LOW);digitalWrite(IN2,HIGH);digitalWrite(IN3,HIGH);digitalWrite(IN4,HIGH);}        
 #define DERECHA   {digitalWrite(IN1,HIGH);digitalWrite(IN2,HIGH);digitalWrite(IN3,HIGH);digitalWrite(IN4,LOW);}       
 #define ALTO      {digitalWrite(IN1,LOW);digitalWrite(IN2,LOW);digitalWrite(IN3,LOW);digitalWrite(IN4,LOW);} 
-   
-#define TRIGGER_PIN  A4  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define ECHO_PIN     A5  // Arduino pin tied to echo pin on the ultrasonic sensor.
-
+ 
 //MOTORES
 int VelocidadMotor1 = 5; //ENA
 int VelocidadMotor2 = 6; //ENB
@@ -23,8 +20,8 @@ int IN3 = 12;
 int IN4 = 13;   
 
 //SENSOR ULTRASÓNICO
-int Echo = A5;                   
-int Trig = A4;                  
+#define TRIGGER_PIN  A4  // Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define ECHO_PIN     A5  // Arduino pin tied to echo pin on the ultrasonic sensor.                 
 int dis = 0;
 
 //VARIABLES DE BÚSQUEDA CON SERVO
@@ -51,11 +48,20 @@ int infraIZQ = 2;    // izquierdo - pin del infrarrojos utilizado como entrada d
 int infraDER = 11;  //  derecho
 int valorInfraI = 0;  // Valor inicial de la lectura digital del infrarrojos izquierdo 
 int valorInfraD = 0;  // derecho
+boolean gD = false; 
+boolean gI = false;
+boolean detener = false;
+boolean avanzar = false;
+
+//INFRARROJO DETECTOR
+int infraDET = A3;
+int valorInfraDET = 0;
 
 void setup()
 {  
     pinMode(infraIZQ, INPUT);    
     pinMode(infraDER, INPUT); 
+    pinMode(infraDET, INPUT); 
     pinMode(pinVerde, OUTPUT);
     pinMode(pinRojo, OUTPUT);
     myservo.attach(9);  // vincula el servo al pin digital 9
@@ -76,9 +82,8 @@ void setup()
 void loop()
 {  
     dis = getDistance();
-    valorInfraI = digitalRead(infraIZQ);    // valor de la entrada que lee el infrarrojo izquierdo
-    valorInfraD = digitalRead(infraDER);  // derecho
-        
+    onInfraR();
+   
     if(fase2 == false && fase3 == false){
             analogWrite(VelocidadMotor1, 100); //motor derecho
             analogWrite(VelocidadMotor2, 100);  //motor izquierdo
@@ -154,10 +159,29 @@ void loop()
                 }
                 else{
                   Serial.println("PINZA OK");  
-                  delay(2000);
-                  servoA.write(50); // Mueve la pinza derecha
-                  delay(2000);
-                  fase2 = true;
+                  onInfraR();
+                  
+                  if(valorInfraDET == 1){
+                    digitalWrite(pinVerde, HIGH);
+                    digitalWrite(pinRojo, LOW);
+                    Serial.println(valorInfraDET); 
+                    delay(2000);
+                    servoA.write(60); // Mueve la pinza derecha
+                    delay(2000);
+                    fase2 = true;
+                  }
+                  else{
+                    digitalWrite(pinVerde, LOW);
+                    digitalWrite(pinRojo, HIGH);
+                    ALTO;
+                    delay(1000);
+                    ATRAS;
+                    delay(500);
+                    GIROI;
+                    delay(300);
+                    fase1 = true;
+                    go = false;
+                  }
                 }
                 
              }
@@ -174,82 +198,117 @@ void loop()
     
     
     if(fase2 == true) {
-        Serial.println("FASE 2"); 
         analogWrite(VelocidadMotor1, 70); //motor derecho
         analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
-
-           if(valorInfraI == 1 || valorInfraD == 1){
-               digitalWrite(pinVerde, HIGH);
-               digitalWrite(pinRojo, LOW);
+        digitalWrite(pinVerde, LOW);
+        digitalWrite(pinRojo, HIGH);
+        onInfraR();
+            if(valorInfraI == 1 && valorInfraD == 0){
+               GIROI;
+               delay(1200);
                ALTO;
-               delay(2000);
+               delay(500);
+               fase2 = false;
+               fase3 = true; 
+                 
+            }
+
+            if(valorInfraI == 0 && valorInfraD == 1){
+               GIROD;
+               delay(1200);
+               ALTO;
+               delay(500);
                fase2 = false;
                fase3 = true;   
             }
-            
+            /*
             if(dis < 10){
-                digitalWrite(pinRojo, HIGH);
-                ALTO;
-                delay(500);
-                GIROD;
-                delay(2300);;       
-            }
-            else if(dis > 10 && dis < 50){
-                digitalWrite(pinRojo, HIGH);
-                ADELANTE;
+               digitalWrite(pinRojo, HIGH);
+               ALTO;
+               delay(500);
+               GIROD;
+               delay(1300);;       
+            }*/
+            
+            if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
+              ADELANTE;   
             }
       }
 
        if(fase3 == true){
-            analogWrite(VelocidadMotor1, 50); //motor derecho
-            analogWrite(VelocidadMotor2, 50);  //motor izquierdo 
-            valorInfraI = digitalRead(infraIZQ);    // valor de la entrada que lee el infrarrojo izquierdo
-            valorInfraD = digitalRead(infraDER);  // derecho
-        
+            analogWrite(VelocidadMotor1, 80); //motor derecho
+            analogWrite(VelocidadMotor2, 80);  //motor izquierdo 
+            
+            onInfraR();
             digitalWrite(pinVerde, HIGH);
             digitalWrite(pinRojo, LOW);
             
              // 0 = blanco / 1 = negro
             if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
-              ADELANTE;   
-            }
-      
-            if(valorInfraI == 0 && valorInfraD == 1){  // Giro derecha
-              GIROD;
-              delay(200);
-            }
-          
-            if(valorInfraI == 1 && valorInfraD == 0){ // Giro izquierda
-              GIROI;
-              delay(200);
-            }
-          
-            if(valorInfraI == 1 && valorInfraD == 1){  // STOP
-              ALTO;   
-              delay(1000);
-              servoA.write(5); // POSICION INICIAL DEL SERVO PARA LA PINZA
-              delay(1000);
-              ATRAS;
-              delay(2000);
-              GIROI;
-              delay(3000);
-              fase2 = false;
-              fase1 = true;
-              go = false;
-              ok = false;
-              ok2 = false;
-              ok3 = false;
-              fase3 = false;
+              ADELANTE; 
+              if(avanzar == true){
+                detener = true;  
+              }
             }
             
-            delay(100);
-            digitalWrite(pinVerde, LOW);
-            digitalWrite(pinRojo, HIGH);
-            delay(100);
+            if(valorInfraI == 0 && valorInfraD == 1){  // Giro derecha
+              gD = true;
+              gI = false;
+              GIROD;
+              avanzar = true;
+            }
+            
+            if(valorInfraI == 1 && valorInfraD == 0){ // Giro izquierda
+              gD = false;
+              gI = true;
+              GIROI;
+              avanzar = true;
+            }
+
+            if(detener == true){
+                if(valorInfraI == 1 && valorInfraD == 1){  // STOP
+                  ALTO;   
+                  delay(1000);
+                  servoA.write(25); // POSICION INICIAL DEL SERVO PARA LA PINZA
+                  delay(1000);
+                  ATRAS;
+                  delay(1000);
+                  
+                  if(gD == true){
+                    GIROD;
+                    delay(1000);
+                  }
+                  else if(gI == true){
+                    GIROI;
+                    delay(1000);
+                  }
+    
+                  ADELANTE;
+                  delay(1000);
+                  
+                  fase2 = false;
+                  fase1 = true;
+                  go = false;
+                  ok = false;
+                  ok2 = false;
+                  ok3 = false;
+                  fase3 = false;
+                  detener = false;
+                  avanzar = false;
+                }
+            }
+            //delay(50);
         }
 
 
  }
+
+
+void onInfraR(){
+   valorInfraI = digitalRead(infraIZQ);    // valor de la entrada que lee el infrarrojo izquierdo
+   valorInfraD = digitalRead(infraDER);  // derecho
+   valorInfraDET = digitalRead(infraDET); 
+}
 
 boolean search1(){
   myservo.write(-20);  ;          
