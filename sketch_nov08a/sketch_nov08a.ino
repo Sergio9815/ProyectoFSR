@@ -35,7 +35,6 @@ boolean fase1 = true;
 boolean fase2 = false;
 boolean fase3 = false;
 
-
 //SERVO MOTORES
 Servo myservo, servoA;  // crea el objeto servo
 
@@ -52,6 +51,7 @@ boolean gD = false;
 boolean gI = false;
 boolean detener = false;
 boolean avanzar = false;
+int contador = 0 ;
 
 //INFRARROJO DETECTOR
 int infraDET = A3;
@@ -206,23 +206,23 @@ void loop()
         onInfraR();
         onInfraR();
         onInfraR();
+        
             if(valorInfraI == 1 && valorInfraD == 0){
                GIROI;
-               delay(1600);
+               delay(1700);
                ALTO;
                delay(500);
                fase2 = false;
-               fase3 = true; 
-                 
+               fase3 = true;
             }
-
+            
             if(valorInfraI == 0 && valorInfraD == 1){
                GIROD;
-               delay(1600);
+               delay(1700);
                ALTO;
                delay(500);
                fase2 = false;
-               fase3 = true;   
+               fase3 = true;
             }
             /*
             if(dis < 10){
@@ -234,14 +234,14 @@ void loop()
             }*/
             
             if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
-              ADELANTE;   
+               ADELANTE;   
             }
       }
 
-       if(fase3 == true){
+      if(fase3 == true){
             analogWrite(VelocidadMotor1, 70); //motor derecho
             analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
-            
+            onInfraR();
             onInfraR();
             digitalWrite(pinVerde, HIGH);
             digitalWrite(pinRojo, LOW);
@@ -250,6 +250,10 @@ void loop()
             if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
               ADELANTE; 
               if(avanzar == true){
+                contador++;
+              }
+
+              if(contador == 60){
                 detener = true;  
               }
             }
@@ -298,6 +302,7 @@ void loop()
                   fase3 = false;
                   detener = false;
                   avanzar = false;
+                  contador = 0 ;
                 }
             }
             //delay(50);
