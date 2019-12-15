@@ -67,7 +67,7 @@ void setup()
     myservo.attach(9);  // vincula el servo al pin digital 9
     servoA.attach(10); //PINZA DERECHA
     myservo.write(35); //POSICION INICIAL DEL SERVO PARA EL SENSOR
-    servoA.write(25); // POSICION INICIAL DEL SERVO PARA LA PINZA
+    servoA.write(45); // POSICION INICIAL DEL SERVO PARA LA PINZA
     Serial.begin(115200); // Open serial monitor at 115200 baud to see ping results.
     pinMode(ECHO_PIN , INPUT);
     pinMode(TRIGGER_PIN, OUTPUT);
@@ -159,14 +159,15 @@ void loop()
                 }
                 else{
                   Serial.println("PINZA OK");  
-                  onInfraR();
+                  //onInfraR();
                   
                   //if(valorInfraDET == 1){
+                  
+                    delay(1000);
                     digitalWrite(pinVerde, HIGH);
                     digitalWrite(pinRojo, LOW);
                     Serial.println(valorInfraDET); 
-                    delay(2000);
-                    servoA.write(60); // Mueve la pinza derecha
+                    servoA.write(70); // Mueve la pinza derecha
                     delay(2000);
                     fase2 = true;
                  /* }
@@ -203,13 +204,12 @@ void loop()
         digitalWrite(pinVerde, LOW);
         digitalWrite(pinRojo, HIGH);
         onInfraR();
-        onInfraR();
-        onInfraR();
-        onInfraR();
         
             if(valorInfraI == 1 && valorInfraD == 0){
+               analogWrite(VelocidadMotor1, 70); //motor derecho
+               analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
                GIROI;
-               delay(1700);
+               delay(1000);
                ALTO;
                delay(500);
                fase2 = false;
@@ -217,34 +217,29 @@ void loop()
             }
             
             if(valorInfraI == 0 && valorInfraD == 1){
+               analogWrite(VelocidadMotor1, 70); //motor derecho
+               analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
                GIROD;
-               delay(1700);
+               delay(1000);
                ALTO;
                delay(500);
                fase2 = false;
                fase3 = true;
             }
-            /*
-            if(dis < 10){
-               digitalWrite(pinRojo, HIGH);
-               ALTO;
-               delay(500);
-               GIROD;
-               delay(1300);;       
-            }*/
             
             if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
                ADELANTE;   
             }
       }
-
+      
       if(fase3 == true){
             analogWrite(VelocidadMotor1, 70); //motor derecho
             analogWrite(VelocidadMotor2, 70);  //motor izquierdo 
+            
             onInfraR();
-            onInfraR();
+
             digitalWrite(pinVerde, HIGH);
-            digitalWrite(pinRojo, LOW);
+            digitalWrite(pinRojo, HIGH);
             
              // 0 = blanco / 1 = negro
             if(valorInfraI == 0 && valorInfraD == 0){ // Hacia delante
@@ -253,7 +248,7 @@ void loop()
                 contador++;
               }
 
-              if(contador == 60){
+              if(contador >= 5){
                 detener = true;  
               }
             }
@@ -276,7 +271,7 @@ void loop()
                 if(valorInfraI == 1 && valorInfraD == 1){  // STOP
                   ALTO;   
                   delay(1000);
-                  servoA.write(25); // POSICION INICIAL DEL SERVO PARA LA PINZA
+                  servoA.write(45); // POSICION INICIAL DEL SERVO PARA LA PINZA
                   delay(1000);
                   ATRAS;
                   delay(1000);
